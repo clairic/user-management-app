@@ -1,7 +1,7 @@
 # 🎯 React User Management App
 
 ## 📋 Project Description
-A clean React application for managing users (add, view, delete) with modern UI design. Data is stored locally in the browser for the time being, Soon I will build the backend, where data will be stored in an SQL database.
+A simple React application for managing users (add, view, delete) with modern UI design. Data is stored locally in the browser for the time being, Soon I will build the backend, where data will be stored in an SQL database.
 
 ## ✅ Current Features
 
