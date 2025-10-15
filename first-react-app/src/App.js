@@ -10,65 +10,83 @@ function App() {
     phone: ''
   })
 
-  // API base URL
-  const API_BASE = 'http://localhost:5000/api'
+  // Sample initial data (you can remove this when you connect your new backend)
+  const initialUsers = [
+    { id: 1, name: 'John Doe', email: 'john.doe@example.com', phone: '+1-555-0123', created_at: '2025-10-15T10:00:00Z' },
+    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', phone: '+1-555-0456', created_at: '2025-10-15T10:01:00Z' },
+    { id: 3, name: 'Bob Johnson', email: 'bob.johnson@example.com', phone: '+1-555-0789', created_at: '2025-10-15T10:02:00Z' },
+    { id: 4, name: 'Alice Brown', email: 'alice.brown@example.com', phone: '+1-555-0321', created_at: '2025-10-15T10:03:00Z' },
+  ]
 
-  // Fetch users from SQL database
-  const fetchUsers = async () => {
+  // Load users from localStorage or use initial data
+  const loadUsers = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(`${API_BASE}/users`)
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      const savedUsers = localStorage.getItem('users')
+      if (savedUsers) {
+        const parsedUsers = JSON.parse(savedUsers)
+        setUsers(parsedUsers)
+        console.log('✅ Loaded users from localStorage:', parsedUsers.length)
+      } else {
+        // First time - use initial data
+        setUsers(initialUsers)
+        localStorage.setItem('users', JSON.stringify(initialUsers))
+        console.log('✅ Initialized with sample data:', initialUsers.length)
       }
-      const data = await response.json()
-      setUsers(data)
-      console.log('✅ Fetched users from SQL database:', data.length)
     } catch (err) {
-      setError('Failed to fetch users from database')
-      console.error('❌ Fetch error:', err)
+      setError('Failed to load users from local storage')
+      console.error('❌ Load error:', err)
+      setUsers(initialUsers) // Fallback to initial data
     } finally {
       setLoading(false)
     }
   }
 
+  // Save users to localStorage whenever users change
+  const saveUsers = (updatedUsers) => {
+    try {
+      localStorage.setItem('users', JSON.stringify(updatedUsers))
+      setUsers(updatedUsers)
+    } catch (err) {
+      setError('Failed to save users to local storage')
+      console.error('❌ Save error:', err)
+    }
+  }
+
   useEffect(() => {
-    fetchUsers()
+    loadUsers()
   }, [])
 
-  const addUser = async () => {
+  const addUser = () => {
     if (newUser.name.trim() !== '' && newUser.email.trim() !== '' && newUser.phone.trim() !== '') {
+      // Check for duplicate email
+      const emailExists = users.some(user => user.email.toLowerCase() === newUser.email.toLowerCase())
+      if (emailExists) {
+        setError('Email already exists')
+        return
+      }
+
       try {
-        const response = await fetch(`${API_BASE}/users`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: newUser.name,
-            email: newUser.email,
-            phone: newUser.phone
-          })
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Failed to add user')
+        const userToAdd = {
+          id: Date.now(), // Simple ID generation
+          name: newUser.name,
+          email: newUser.email,
+          phone: newUser.phone,
+          created_at: new Date().toISOString()
         }
-
-        const addedUser = await response.json()
-        console.log('✅ User added to database:', addedUser)
         
-        // Refresh the user list
-        await fetchUsers()
+        const updatedUsers = [...users, userToAdd]
+        saveUsers(updatedUsers)
+        
+        console.log('✅ User added to localStorage:', userToAdd)
         
         // Reset form
         setNewUser({ name: '', email: '', phone: '' })
         setError(null)
         
       } catch (err) {
-        setError(err.message)
+        setError('Failed to add user')
         console.error('❌ Add user error:', err)
       }
     } else {
@@ -76,19 +94,13 @@ function App() {
     }
   }
 
-  const deleteUser = async (userId) => {
+  const deleteUser = (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        const response = await fetch(`${API_BASE}/users/${userId}`, {
-          method: 'DELETE'
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to delete user')
-        }
-
-        console.log('🗑️ User deleted from database')
-        await fetchUsers() // Refresh the list
+        const updatedUsers = users.filter(user => user.id !== userId)
+        saveUsers(updatedUsers)
+        
+        console.log('🗑️ User deleted from localStorage')
         setError(null)
         
       } catch (err) {
@@ -244,7 +256,7 @@ function App() {
           </div>
         ) : (
           <>
-            <h1 style={styles.header}>👥 User Management (SQL Database)</h1>
+            <h1 style={styles.header}>👥 User Management (Local Storage)</h1>
             
             {/* Error Display */}
             {error && (
