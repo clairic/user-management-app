@@ -1,11 +1,10 @@
 # Simple Website to Add Users to a List  
-In this project, I will create a basic web app where you will be able to add users to a list and they will be saved in a SQL database. 
+In this project, I have created a basic web app using React, where you are be able to add user data to a table (name, email, phone number) and they are saved in an SQL database. 
 
-## To-do List
-- `Create the demo web app` ✅ 
-- `Make it a bit less ugly` 
-- `Connect the web app to an SQL database` 
-- `Use the database to save the users' names` 
+In the following image you can see how the app looks like: 
+
+![web app UI](images/web-app-screenshot)
+
 
 ## Available Scripts
 
