@@ -3,7 +3,7 @@ In this project, I have created a basic web app using React, where you are be ab
 
 In the following image you can see how the app looks like: 
 
-![web app UI](images/web-app-screenshot)
+![web app UI](images/web-app-screenshot.png)
 
 
 ## Available Scripts
