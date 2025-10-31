@@ -1,7 +1,7 @@
 # 🎯 React User Management App
 
 ## 📋 Project Description
-A simple React application for managing users (add, view, delete) with modern UI design. Data is stored locally in the browser for the time being, Soon I will build the backend, where data will be stored in an SQL database.
+A simple static React application for managing users (add, view, delete) with modern UI design. Data is stored locally in the browser for the time being, Soon I will build the backend, where data will be stored in an SQL database. I will connect this to Azure for a static web app project using Terraform (IaC) I am currently working on. Afterwards, I will work on creating a dynamic web app. 
 
 ## Current Features
 
@@ -41,7 +41,7 @@ Opens on http://localhost:3000
 ```
 
 
-## 🌐 TO-DO: Create the Backend using SQL
+## 🌐 TO-DO: Connecting the static web app to Azure using GitHub Actions 
 
 Under construction 🚧
 
